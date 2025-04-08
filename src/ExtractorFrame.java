@@ -13,16 +13,19 @@ public class ExtractorFrame extends JFrame
     File stopWordsFile;
     TreeSet<String> stopWords;
     Map<String, Integer> wordFrequencies;
+
+
     public ExtractorFrame(){
         setTitle("Tag Extractor");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JButton openFileBtn = new JButton("Open Text File");
-        JButton openStopWordsBtn = new JButton("Open Stop Words File");
-        JButton extractTagsBtn = new JButton("Extract Tags");
-        JButton saveTagsBtn = new JButton("Save Tags");
-        JTextArea wordsArea = new JTextArea(20, 40);
-        JScrollPane scrollPane = new JScrollPane(wordsArea);
+        openFileBtn = new JButton("Open Text File");
+        openStopWordsBtn = new JButton("Open Stop Words File");
+        extractTagsBtn = new JButton("Extract Tags");
+        saveTagsBtn = new JButton("Save Tags");
+        wordsArea = new JTextArea(20, 40);
+        scrollPane = new JScrollPane(wordsArea);
+
 
         wordsArea.setEditable(false);
 
@@ -44,39 +47,49 @@ public class ExtractorFrame extends JFrame
         setVisible(true);
     }
 
-    private void selectTextFile(){
+    private void selectTextFile() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
-        if(result == JFileChooser.APPROVE_OPTION){
+        if (result == JFileChooser.APPROVE_OPTION) {
             textFile = fileChooser.getSelectedFile();
             wordsArea.setText("Selected Text File: " + textFile.getName());
+        } else {
+            wordsArea.setText("Text File selection canceled.");
         }
-
     }
 
-    private void selectStopWordsFile()
-    {
+    private void selectStopWordsFile() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
-        if(result == JFileChooser.APPROVE_OPTION){
+        if (result == JFileChooser.APPROVE_OPTION) {
             stopWordsFile = fileChooser.getSelectedFile();
             wordsArea.setText("Selected Stop Words File: " + stopWordsFile.getName());
             loadStopWords();
+        } else {
+            wordsArea.setText("Stop Words File selection canceled.");
         }
     }
 
-    private void loadStopWords()
-    {
+
+    private void loadStopWords() {
+        if (stopWordsFile == null) { // Check if stopWordsFile is null
+            wordsArea.setText("Stop Words File not selected or invalid.");
+            return;
+        }
+
         stopWords = new TreeSet<>();
-        try(BufferedReader reader = new BufferedReader(new FileReader(stopWordsFile))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(stopWordsFile))) {
             String line;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 stopWords.add(line.trim().toLowerCase());
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             wordsArea.setText("Error loading stop words: " + e.getMessage());
         }
     }
+
+
+
 
     private void extractTags(){
         if(textFile == null || stopWords == null){
