@@ -72,7 +72,7 @@ public class ExtractorFrame extends JFrame
 
 
     private void loadStopWords() {
-        if (stopWordsFile == null) { // Check if stopWordsFile is null
+        if (stopWordsFile == null) {
             wordsArea.setText("Stop Words File not selected or invalid.");
             return;
         }
